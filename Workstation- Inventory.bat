@@ -11,7 +11,7 @@ echo ========================================
 echo      WORKSTATION INVENTORY v1.1
 echo ========================================
 echo.
-echo Adatok lekérdezése, kérlek várj..
+echo Adatok lekérdezése folyamatban, kérlek várj..
 
 rem ================== POWERSHELL PARANCS ÖSSZEÁLLÍTÁSA ==================
 rem Minden sor KULCS=ÉRTÉK formátumban jön vissza, így az üres értékek
