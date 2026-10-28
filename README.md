@@ -36,13 +36,13 @@ Jellemzők:
 
 ## Követelmények
 
-- Windows 10 / 11 (vagy Windows Server 2012 R2 és újabb)
-- Windows PowerShell 5.1 (a Windowsszal együtt települ)
+- Windows 10 / 11
+- Windows PowerShell 5.1
 - Szükséges parancsok: `Get-CimInstance`, `Get-NetIPConfiguration`, `Get-NetAdapter`
 
 ## Használat
 
-1. Töltsd le a `Workstation_Inventory.bat` fájlt (vagy klónozd a repót).
+1. Töltsd le a `Workstation_Inventory.bat` fájlt.
 2. Futtasd dupla kattintással, vagy parancssorból:
 
    ```bat
@@ -51,7 +51,8 @@ Jellemzők:
 
 3. A futás végén egy billentyű lenyomásával bezárható az ablak.
 
-Távoli vagy csoportházirenddel korlátozott gépen előfordulhat, hogy a PowerShell futtatása tiltott. Ilyenkor lásd a [Hibaelhárítás](#hibaelhárítás) részt.
+Távoli vagy csoportházirenddel korlátozott gépen előfordulhat, hogy a PowerShell futtatása tiltott. 
+Ilyenkor lásd a [Hibaelhárítás](#hibaelhárítás) részt.
 
 ## Példakimenet
 
@@ -66,7 +67,7 @@ Futtatás ideje: 2026. 10. 28. 14:30:12,45
 [ALAPINFORMÁCIÓK]
   Gépnév:               PC-EXAMPLE01
   Felhasználó:          CONTOSO\janos.kovacs
-  Domain/Munkacsoport:  contoso.local
+  Domain/Munkacsoport:  WORKSPACE
 
 [HARDVER]
   Gyártó:               Dell Inc.
@@ -99,10 +100,10 @@ Futtatás ideje: 2026. 10. 28. 14:30:12,45
 ## Működés
 
 1. **PowerShell-parancs összeállítása.** A script `set "PS=%PS%..."` sorokkal építi fel a parancsot egy változóba. Ez olvashatóbb, mint egyetlen hosszú sor, és nem használ `^` sortöréseket.
-2. **Kulcs-érték kimenet.** A PowerShell egy `o` nevű segédfüggvénnyel `INV_KULCS=érték` sorokat ír. Ha az érték üres, a függvény `N/A`-t ír, így a kimenet sorszáma mindig állandó.
-3. **Beolvasás.** A `for /f` ciklus `=` mentén szétbontja a sorokat, és `INV_*` nevű környezeti változókat hoz létre. Az `INV_` előtag megakadályozza, hogy a változók ütközzenek a rendszer változóival (pl. `OS`, `PROCESSOR_*`).
-4. **Alapértékek.** Ha egy változó mégsem jön létre (például a PowerShell nem futott le), `Ismeretlen` kerül a helyére.
-5. **Kiírás.** A megjelenítés késleltetett kiterjesztéssel (`!VAR!`) történik, így az értékekben szereplő speciális karakterek (pl. `&`) nem törik meg a `echo` parancsot.
+3. **Kulcs-érték kimenet.** A PowerShell egy `o` nevű segédfüggvénnyel `INV_KULCS=érték` sorokat ír. Ha az érték üres, a függvény `N/A`-t ír, így a kimenet sorszáma mindig állandó.
+4. **Beolvasás.** A `for /f` ciklus `=` mentén szétbontja a sorokat, és `INV_*` nevű környezeti változókat hoz létre. Az `INV_` előtag megakadályozza, hogy a változók ütközzenek a rendszer változóival (pl. `OS`, `PROCESSOR_*`).
+5. **Alapértékek.** Ha egy változó mégsem jön létre (például a PowerShell nem futott le), `Ismeretlen` kerül a helyére.
+6. **Kiírás.** A megjelenítés késleltetett kiterjesztéssel (`!VAR!`) történik, így az értékekben szereplő speciális karakterek (pl. `&`) nem törik meg a `echo` parancsot.
 
 A hálózati blokk az alapértelmezett átjáróval rendelkező adaptert használja, ezért a virtuális adapterek (VPN, Hyper-V, WSL) nem zavarják a kimenetet.
 
@@ -131,20 +132,24 @@ Workstation_Inventory.bat > inventory.txt
 
 ## Ismert korlátok
 
-- Csak egy aktív (átjáróval rendelkező) hálózati adaptert jelenít meg.
-- Ha az érték `!` karaktert tartalmaz, a késleltetett kiterjesztés miatt az eltűnhet (gyakorlatban ritka).
-- A `%date%` és `%time%` formátuma a területi beállítástól függ.
-- Windows 7 és régebbi rendszereken nem támogatott. A `Get-NetIPConfiguration` Windows 8 / Server 2012 előtt nem érhető el.
-- Nincs `.ps1` verzió, a script cmd-ben fut és PowerShellt hív.
+- Csak egy aktív (átjáróval rendelkező) hálózati adaptert jelenít meg. 
+- Ha az érték `!` karaktert tartalmaz, a késleltetett kiterjesztés miatt az eltűnhet. 
+- A `%date%` és `%time%` formátuma a területi beállítástól függ. 
+- Windows 7 és régebbi rendszereken nem támogatott.
+- Nincs `.ps1` verzió, a script CMD-ben fut és PowerShellt hív le. 
 
 ## Hozzájárulás
 
-Hibajelentést és javaslatot Issue-ban várok. Pull request esetén:
+Hibajelentést és javaslatot Issue-ban várok. 
+Pull request esetén:
 
-- Forkold a repót és hozz létre külön ágat (`feature/uj-adat`).
-- Tartsd a `.bat` fájlt UTF-8 (BOM nélküli), CRLF sorvéggel.
+- Tartsd a `.bat` fájlt UTF-8, CRLF sorvéggel.
 - Új adat esetén frissítsd a README funkciótáblázatát és a `CHANGELOG.md` fájlt.
 - A PR leírásában add meg, melyik Windows-verzión próbáltad ki.
+- Kérlek mindent dokumontálj.
 
 ## Licenc
 [MIT](LICENSE)
+
+## Állapot 
+- Utolsó frissítés: 2026. 10. 28.
