@@ -11,7 +11,7 @@ echo ========================================
 echo      WORKSTATION INVENTORY v1.1
 echo ========================================
 echo.
-echo Adatok lekérdezése, kérlek várj...
+echo Adatok lekérdezése, kérlek várj..
 
 rem ================== POWERSHELL PARANCS ÖSSZEÁLLÍTÁSA ==================
 rem Minden sor KULCS=ÉRTÉK formátumban jön vissza, így az üres értékek
@@ -101,7 +101,7 @@ echo Inventarizálás befejezve.
 echo ========================================
 echo.
 
-echo Bármelyik gomb lenyomásával bezárható...
+echo Bármelyik gomb lenyomásával bezárható..
 pause >nul
 endlocal
 exit /b
