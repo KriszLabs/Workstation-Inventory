@@ -1,1 +1,112 @@
-Clear-Host " Workstation-Inventory.ps1 "
+@echo off
+chcp 65001 >nul
+setlocal EnableDelayedExpansion
+
+title Workstation Inventory v1.0
+color 0A
+
+rem --- Kimeneti fájl neve: Inventory_GÉPNÉV_ÉV-HÓNAP-NAP.txt ---
+for /f "tokens=1-3 delims=. " %%A in ("%date%") do set D=%%C-%%B-%%A
+set "OUTFILE=%~dp0Inventory_%COMPUTERNAME%_%D%.txt"
+
+cls
+
+echo.
+echo ========================================
+echo      WORKSTATION INVENTORY v1.0
+echo ========================================
+echo.
+
+echo [ALAPINFORMÁCIÓK]
+echo.
+
+echo Gépnév:
+echo %COMPUTERNAME%
+echo.
+
+echo Felhasználó:
+echo %USERNAME%
+echo.
+
+rem ================== EGYETLENI LEKÉRDEZÉS POWERSHELLLEL ==================
+set "PS_SCRIPT="
+for /f "usebackq delims=" %%A in (
+    `powershell -NoProfile -Command "cs=Get−CimInstanceWin32ComputerSystem;cs=Get-CimInstance Win32_ComputerSystem;cs=Get−CimInstanceWin32C​omputerSystem;bios=Get-CimInstance Win32_BIOS; os=Get−CimInstanceWin32OperatingSystem;os=Get-CimInstance Win32_OperatingSystem;os=Get−CimInstanceWin32O​peratingSystem;cpu=Get-CimInstance Win32_Processor | Select-Object -First 1; cs.Manufacturer;cs.Manufacturer;cs.Manufacturer;cs.Model; bios.SerialNumber;bios.SerialNumber;bios.SerialNumber;os.Caption; cpu.Name;[math]::Round(cpu.Name; [math]::Round(cpu.Name;[math]::Round(cs.TotalPhysicalMemory/1GB,0)"`
+) do (
+    set /a IDX+=1
+    if !IDX!==1 set "MANUFACTURER=%%A"
+    if !IDX!==2 set "MODEL=%%A"
+    if !IDX!==3 set "SERIAL=%%A"
+    if !IDX!==4 set "OSNAME=%%A"
+    if !IDX!==5 set "CPU=%%A"
+    if !IDX!==6 set "RAMGB=%%A"
+)
+
+rem Alapértékek, ha valami nem jött vissza
+if not defined MANUFACTURER set "MANUFACTURER=Ismeretlen"
+if not defined MODEL set "MODEL=Ismeretlen"
+if not defined SERIAL set "SERIAL=Ismeretlen"
+if not defined OSNAME set "OSNAME=Ismeretlen"
+if not defined CPU set "CPU=Ismeretlen"
+if not defined RAMGB set "RAMGB=Ismeretlen"
+
+echo Gyártó:
+echo !MANUFACTURER!
+echo.
+
+echo Modell:
+echo !MODEL!
+echo.
+
+echo Sorozatszám:
+echo !SERIAL!
+echo.
+
+echo Operációs rendszer:
+echo !OSNAME!
+echo.
+
+echo Processzor:
+echo !CPU!
+echo.
+
+echo Memória:
+echo !RAMGB! GB
+echo.
+
+rem ================== HÁLÓZAT ==================
+echo Hálózat:
+ipconfig | findstr /i "IPv4"
+echo.
+
+rem ================== TXT FÁJLBA MENTÉS ==================
+(
+    echo ========================================
+    echo      WORKSTATION INVENTORY v1.0
+    echo ========================================
+    echo Létrehozva: %date% %time%
+    echo.
+    echo Gépnév:              %COMPUTERNAME%
+    echo Felhasználó:         %USERNAME%
+    echo Gyártó:              !MANUFACTURER!
+    echo Modell:              !MODEL!
+    echo Sorozatszám:         !SERIAL!
+    echo Operációs rendszer:  !OSNAME!
+    echo Processzor:          !CPU!
+    echo Memória:             !RAMGB! GB
+    echo.
+    echo Hálózat:
+    ipconfig | findstr /i "IPv4"
+) > "%OUTFILE%"
+
+echo ========================================
+echo Inventarizálás befejezve.
+echo Kimeneti fájl:
+echo %OUTFILE%
+echo ========================================
+echo.
+
+echo Bármelyik gomb lenyomásával bezárható...
+pause >nul
+endlocal
+exit /b
