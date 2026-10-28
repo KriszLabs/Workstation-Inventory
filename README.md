@@ -1,5 +1,7 @@
 Workstation Inventory
+
 PowerShell alapú munkaállomás-leltározó eszköz.
+
 
 Funkciók
 Gépnév,
